@@ -35,7 +35,7 @@ function OptionsHeader({
 }) {
 
     const handleSubmit = () => {
-        calculateInstallments(propertyValue, downPayment, interestRate, 0, termYears, 0, 0);
+        calculateInstallments(propertyValue, downPayment, interestRate, TRRate, termYears, extraAmortization, totalPayment);
     };
 
     return (
