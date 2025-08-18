@@ -43,27 +43,29 @@ h2 {
 }
 
 .options-container {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(200px, 1fr)); 
+    gap: 16px; /* spacing between items */
     width: 90%;
     margin: 2% 5% 40px;
     background-color: #f2f2f2;
     border: 1px solid #ddd;
     border-radius: 4px;
-    display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
 }
 
-.submit-button {
-    display: flex;
-    flex-direction: column;
-    margin: 10px;
-    min-width: 200px;
-    min-height: 25px;
+.submit-button button {
+    height: 65%;
+    width: 75%;
+    /* margin: 15px; */
+    margin-top: 5%;
 }
 
 .input-group {
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
     margin: 10px;
     min-width: 200px;
 }

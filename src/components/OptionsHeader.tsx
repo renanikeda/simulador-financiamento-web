@@ -96,7 +96,7 @@ function OptionsHeader({
                 />
             </div>
             <div className="input-group">
-                <label htmlFor="totalPayment">Parcela Total (com Amortização):</label>
+                <label htmlFor="totalPayment">Parcela Total:</label>
                 <input
                     id="totalPayment"
                     type="number"
@@ -108,7 +108,9 @@ function OptionsHeader({
                 <button
                     id="submit"
                     onClick={handleSubmit}
-                />
+                >
+                    Calcular
+                </button>
             </div>
         </div>
     );
