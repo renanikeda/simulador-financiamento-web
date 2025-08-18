@@ -1,18 +1,7 @@
-import Loan from '../engine/Engine';
+import { type Installment } from '../engine/Engine';
 import './Styles.css';
 
-function AmortizationTable() {
-    const valor_imovel = 350_000
-    const entrada = 200_000
-    const taxa_juros_anual = 12.61 
-    const prazo_anos = 30
-    const amortizacao_adicional = 0
-    const parcela_total = 0
-    const taxa_tr = 0 
-
-    const loan = new Loan(valor_imovel, entrada, taxa_juros_anual, taxa_tr, prazo_anos, amortizacao_adicional, parcela_total);
-    const installments = loan.calculateSAC();
-
+function AmortizationTable({ installments }: { installments: Installment[] }) {
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
     };

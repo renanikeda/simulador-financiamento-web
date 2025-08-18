@@ -1,4 +1,4 @@
-type Installment = {
+export type Installment = {
     number: number;
     adjustedOutstandingBalance: number;
     principalRepayment: number;
