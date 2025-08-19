@@ -1,4 +1,4 @@
-import type { Installment } from "../utils";
+import { formatCurrency, type Installment } from "../utils";
 
 export default class Loan {
     propertyValue: number;
@@ -56,9 +56,9 @@ export default class Loan {
             this.propertyValue * this.monthlyInterestRate + this.financedAmount / this.termMonths;
 
         if (this.totalInstallment > 0 && this.totalInstallment < firstIdealInstallment) {
-            throw new Error(
-                `Total installment cannot be less than the first SAC payment (${firstIdealInstallment.toFixed(2)}).`
-            );
+            const message = `Total installment cannot be less than the first SAC payment ${formatCurrency(firstIdealInstallment)}.`
+            alert(message)
+            throw new Error(message);
         }
 
         const installments: Installment[] = [];
