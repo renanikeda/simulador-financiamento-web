@@ -53,7 +53,7 @@ export default class Loan {
 
     calculateSAC(): Installment[] {
         const firstIdealInstallment =
-            this.propertyValue * this.monthlyInterestRate + this.financedAmount / this.termMonths;
+            (this.propertyValue * this.monthlyInterestRate + this.financedAmount) / this.termMonths;
 
         if (this.totalInstallment > 0 && this.totalInstallment < firstIdealInstallment) {
             const message = `Total installment cannot be less than the first SAC payment ${formatCurrency(firstIdealInstallment)}.`
