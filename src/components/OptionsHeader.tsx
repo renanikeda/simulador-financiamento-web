@@ -1,16 +1,14 @@
+import { useOptions, useOptionsDispatch } from '../Reducer';
 import type { optionsHeader } from '../utils';
 import './Styles.css';
 
 export default function OptionsHeader({
-    options,
-    dispatch,
     calculateInstallments
 } : {
-    options: optionsHeader,
-    dispatch: React.Dispatch<any>,
     calculateInstallments: (options: optionsHeader) => void;
 }) {
-
+    const options = useOptions();
+    const dispatch = useOptionsDispatch();
     const handleChange = (name: keyof optionsHeader, value: number) => {
         dispatch({ type: 'change', name, value });
     };
