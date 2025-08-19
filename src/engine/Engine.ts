@@ -1,13 +1,4 @@
-export type Installment = {
-    number: number;
-    adjustedOutstandingBalance: number;
-    principalRepayment: number;
-    additionalPrincipalRepayment: number;
-    interest: number;
-    installmentAmount: number;
-    updatedOutstandingBalance: number;
-    totalPayment: number;
-};
+import type { Installment } from "../utils";
 
 export default class Loan {
     propertyValue: number;

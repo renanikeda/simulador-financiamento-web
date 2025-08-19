@@ -1,10 +1,7 @@
-import { type Installment } from '../engine/Engine';
+import { formatCurrency, type Installment } from '../utils';
 import './Styles.css';
 
 function AmortizationTable({ installments }: { installments: Installment[] }) {
-    const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-    };
 
     return (
         <>

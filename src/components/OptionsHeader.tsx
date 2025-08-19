@@ -1,41 +1,18 @@
+import type { optionsHeader } from '../utils';
 import './Styles.css';
 
-function OptionsHeader({
-    propertyValue,
-    setPropertyValue,
-    downPayment,
-    setDownPayment,
-    interestRate,
-    setInterestRate,
-    termYears,
-    setTermYears,
-    TRRate,
-    setTRRate,
-    extraAmortization,
-    setExtraAmortization,
-    totalPayment,
-    setTotalPayment,
+export default function OptionsHeader({
+    options,
+    dispatch,
     calculateInstallments
 } : {
-    propertyValue: number;
-    setPropertyValue: (value: number) => void;
-    downPayment: number;
-    setDownPayment: (value: number) => void;
-    interestRate: number;
-    setInterestRate: (value: number) => void;
-    termYears: number;
-    setTermYears: (value: number) => void;
-    TRRate: number;
-    setTRRate: (value: number) => void;
-    extraAmortization: number;
-    setExtraAmortization: (value: number) => void;
-    totalPayment: number;
-    setTotalPayment: (value: number) => void;
-    calculateInstallments: (propertyValue: number, downPayment: number, interestRate: number, TRRate: number, termYears: number, extraAmortization: number, totalPayment: number) => void;
+    options: optionsHeader,
+    dispatch: React.Dispatch<any>,
+    calculateInstallments: (options: optionsHeader) => void;
 }) {
 
-    const handleSubmit = () => {
-        calculateInstallments(propertyValue, downPayment, interestRate, TRRate, termYears, extraAmortization, totalPayment);
+    const handleChange = (name: keyof optionsHeader, value: number) => {
+        dispatch({ type: 'change', name, value });
     };
 
     return (
@@ -45,8 +22,8 @@ function OptionsHeader({
                 <input
                     id="propertyValue"
                     type="number"
-                    value={propertyValue}
-                    onChange={(e) => setPropertyValue(Number(e.target.value))}
+                    value={options.propertyValue}
+                    onChange={(e) => handleChange('propertyValue', Number(e.target.value))}
                 />
             </div>
             <div className="input-group">
@@ -54,8 +31,8 @@ function OptionsHeader({
                 <input
                     id="downPayment"
                     type="number"
-                    value={downPayment}
-                    onChange={(e) => setDownPayment(Number(e.target.value))}
+                    value={options.downPayment}
+                    onChange={(e) => handleChange('downPayment', Number(e.target.value))}
                 />
             </div>
             <div className="input-group">
@@ -63,9 +40,9 @@ function OptionsHeader({
                 <input
                     id="interestRate"
                     type="number"
-                    value={interestRate}
+                    value={options.interestRate}
                     step="0.01"
-                    onChange={(e) => setInterestRate(Number(e.target.value))}
+                    onChange={(e) => handleChange('interestRate', Number(e.target.value))}
                 />
             </div>
             <div className="input-group">
@@ -73,8 +50,8 @@ function OptionsHeader({
                 <input
                     id="termYears"
                     type="number"
-                    value={termYears}
-                    onChange={(e) => setTermYears(Number(e.target.value))}
+                    value={options.termYears}
+                    onChange={(e) => handleChange('termYears', Number(e.target.value))}
                 />
             </div>
             <div className="input-group">
@@ -82,8 +59,8 @@ function OptionsHeader({
                 <input
                     id="TRRate"
                     type="number"
-                    value={TRRate}
-                    onChange={(e) => setTRRate(Number(e.target.value))}
+                    value={options.TRRate}
+                    onChange={(e) => handleChange('TRRate', Number(e.target.value))}
                 />
             </div>
             <div className="input-group">
@@ -91,8 +68,8 @@ function OptionsHeader({
                 <input
                     id="extraAmortization"
                     type="number"
-                    value={extraAmortization}
-                    onChange={(e) => setExtraAmortization(Number(e.target.value))}
+                    value={options.extraAmortization}
+                    onChange={(e) => handleChange('extraAmortization', Number(e.target.value))}
                 />
             </div>
             <div className="input-group">
@@ -100,14 +77,14 @@ function OptionsHeader({
                 <input
                     id="totalPayment"
                     type="number"
-                    value={totalPayment}
-                    onChange={(e) => setTotalPayment(Number(e.target.value))}
+                    value={options.totalPayment}
+                    onChange={(e) => handleChange('totalPayment', Number(e.target.value))}
                 />
             </div>
             <div className="submit-button">
                 <button
                     id="submit"
-                    onClick={handleSubmit}
+                    onClick={() => calculateInstallments(options)}
                 >
                     Calcular
                 </button>
@@ -115,5 +92,3 @@ function OptionsHeader({
         </div>
     );
 }
-
-export default OptionsHeader;

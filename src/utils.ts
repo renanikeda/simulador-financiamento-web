@@ -1,0 +1,32 @@
+
+export type Installment = {
+    number: number;
+    adjustedOutstandingBalance: number;
+    principalRepayment: number;
+    additionalPrincipalRepayment: number;
+    interest: number;
+    installmentAmount: number;
+    updatedOutstandingBalance: number;
+    totalPayment: number;
+};
+
+
+export const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+};
+
+export type optionsHeader = {
+    propertyValue: number,
+    downPayment: number,
+    interestRate: number,
+    TRRate: number,
+    termYears: number,
+    extraAmortization: number,
+    totalPayment: number
+}
+
+export type actionsHeader = {
+    type: 'change',
+    name: keyof optionsHeader,
+    value: number
+}
