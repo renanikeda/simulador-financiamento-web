@@ -1,69 +1,56 @@
-# React + TypeScript + Vite
+Este projeto implementa um simulador de financiamento imobiliário em Python que calcula as prestações pelos sistemas SAC (Sistema de Amortização Constante) e Price (Sistema Francês de Amortização).
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Funcionalidades
 
-Currently, two official plugins are available:
+- Cálculo de financiamento pelo sistema SAC
+- Cálculo de financiamento pelo sistema Price 
+- Visualização das parcelas
+- Comparativo entre os dois sistemas
+- Configuração flexível de:
+  - Valor do imóvel
+  - Valor da entrada
+  - Taxa de juros anual
+  - Prazo em anos
+  - Taxa TR anual
+  - Amortização mensal adicional
+  - Fixar prestação total (prestação + amortização adicional) - tem prioridade frente ao item anterior
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Como usar
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Clone o repositório:
+```bash
+git clone <url-do-repositorio>
+cd simulacao-financiamento-web
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+2. Execute o script principal:
+```bash
+npm i && npm run dev
 ```
+
+3. O programa irá:
+   - Calcular as parcelas nos sistemas SAC e Price
+   - Gerar uma visualização tabela web
+   - Calcular amortização e abate no prazo total
+
+## Requisitos
+
+- Node versão 22 ou superior
+
+## Detalhes técnicos
+
+- Sistema SAC: mantém a amortização constante ao longo do financiamento (parcelas decrescentes)
+- Sistema Price: mantém a prestação constante ao longo do financiamento (parcelas constantes)
+- Os cálculos consideram:
+  - Taxa de juros convertida de anual para mensal
+  - Amortização do capital
+  - Juros sobre o saldo devedor
+  - Prestação total (amortização + juros)
+
+## TODO
+- Resolver tabela PRICE
+- Amortização por redução de prestação
+
+## Licença
+
+MIT
