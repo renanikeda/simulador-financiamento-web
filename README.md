@@ -50,7 +50,7 @@ npm i && npm run dev
 ## TODO
 - Resolver tabela PRICE
 - Amortização por redução de prestação
-
+- Mover para Tailwind + melhorar design
 ## Licença
 
 MIT
