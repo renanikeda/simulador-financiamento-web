@@ -34,10 +34,10 @@ export default class Financiamento {
     }
 
     private deveCalcularNovaAmortizacao(): boolean {
-        return this.exiteAmortizacaoAdicional()|| this.taxaTRMensal > 0;
+        return this.existeAmortizacaoAdicional()|| this.taxaTRMensal > 0;
     }
 
-    private exiteAmortizacaoAdicional(): boolean {
+    private existeAmortizacaoAdicional(): boolean {
         return this.parcelaTotal > 0 || this.amortizacaoAdicional > 0;
     }
 
@@ -45,15 +45,21 @@ export default class Financiamento {
         return Math.floor(saldoDevedor / (parcelaIdeal - saldoDevedor * this.taxaJurosMensal));
     }
 
+    private calcularSaldoDevedorIdeal(prazoAtual: number): number {
+        return Array.from({ length: prazoAtual }, (_, i) => i + 1).reduce((saldo, _) => {
+            return saldo * (1 + this.taxaTRMensal) - (saldo/(this.prazoMeses - prazoAtual + 1));
+        }, this.valorFinanciado);
+    }
+
     private calcularNovaAmortizacao(saldoDevedorAjustado: number, prazoAtual: number): number {
         const amortizacaoIdeal = saldoDevedorAjustado / (this.prazoMeses - prazoAtual + 1);
-        if (prazoAtual == 1 || !this.exiteAmortizacaoAdicional()) return amortizacaoIdeal;
-
-        const saldoDevedorIdeal = this.valorFinanciado - amortizacaoIdeal * prazoAtual;
+        if (prazoAtual == 1 || !this.existeAmortizacaoAdicional()) return amortizacaoIdeal;
+            
+        const saldoDevedorIdeal = this.calcularSaldoDevedorIdeal(prazoAtual) // this.valorFinanciado - amortizacaoIdeal * prazoAtual;
         const parcelaIdeal = amortizacaoIdeal + saldoDevedorIdeal * this.taxaJurosMensal;
-        const newTerm = this.calcularNovoPrazo(saldoDevedorAjustado, parcelaIdeal);
-        return newTerm > 0
-            ? roundNumber(saldoDevedorAjustado / newTerm)
+        const novoPrazo = this.calcularNovoPrazo(saldoDevedorAjustado, parcelaIdeal);
+        return novoPrazo > 0
+            ? roundNumber(saldoDevedorAjustado / novoPrazo)
             : saldoDevedorAjustado;
     }
 
