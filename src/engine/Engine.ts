@@ -46,17 +46,21 @@ export default class Financiamento {
     }
 
     private calcularSaldoDevedorIdeal(prazoAtual: number): number {
-        return Array.from({ length: prazoAtual }, (_, i) => i + 1).reduce((saldo, _) => {
-            return saldo * (1 + this.taxaTRMensal) - (saldo/(this.prazoMeses - prazoAtual + 1));
+        return Array.from({ length: prazoAtual }, (_, i) => i + 1).reduce((saldo, prazo) => {
+            const saldoAjustado = roundNumber(saldo * (1 + this.taxaTRMensal), 4);
+            const amortizacaoIdeal = roundNumber(saldoAjustado / (this.prazoMeses - prazo + 1), 4);
+
+            return saldoAjustado - amortizacaoIdeal;
         }, this.valorFinanciado);
     }
 
     private calcularNovaAmortizacao(saldoDevedorAjustado: number, prazoAtual: number): number {
-        const amortizacaoIdeal = saldoDevedorAjustado / (this.prazoMeses - prazoAtual + 1);
+        let amortizacaoIdeal = saldoDevedorAjustado / (this.prazoMeses - prazoAtual + 1);
         if (prazoAtual == 1 || !this.existeAmortizacaoAdicional()) return amortizacaoIdeal;
             
-        const saldoDevedorIdeal = this.calcularSaldoDevedorIdeal(prazoAtual) // this.valorFinanciado - amortizacaoIdeal * prazoAtual;
-        const parcelaIdeal = amortizacaoIdeal + saldoDevedorIdeal * this.taxaJurosMensal;
+        const saldoDevedorIdeal = this.calcularSaldoDevedorIdeal(prazoAtual - 1 ) // this.valorFinanciado - amortizacaoIdeal * prazoAtual;
+        amortizacaoIdeal =  saldoDevedorIdeal/(this.prazoMeses - prazoAtual + 1) * (1 + this.taxaTRMensal)
+        const parcelaIdeal = amortizacaoIdeal + saldoDevedorIdeal * (1 + this.taxaTRMensal) * this.taxaJurosMensal;
         const novoPrazo = this.calcularNovoPrazo(saldoDevedorAjustado, parcelaIdeal);
         return novoPrazo > 0
             ? roundNumber(saldoDevedorAjustado / novoPrazo)
@@ -82,9 +86,6 @@ export default class Financiamento {
             if (this.deveCalcularNovaAmortizacao()) {
                 amortizacao = this.calcularNovaAmortizacao(saldoDevedorAjustado, i);
             }
-            // if (this.taxaJurosMensal > 0) {
-            //     amortizacao = roundNumber(amortizacao * (1 + this.taxaTRMensal));
-            // }
 
             const interest = roundNumber(saldoDevedorAjustado * this.taxaJurosMensal)   ;
             const parcela = amortizacao + interest;
