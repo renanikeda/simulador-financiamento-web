@@ -10,7 +10,7 @@ export const initialOptions = {
     TRRate: 2,
     termYears: 30,
     extraAmortization: 0,
-    totalPayment: 5_000
+    totalPayment: 0
 };
 
 export const OptionsContext = createContext<optionsHeader>(initialOptions);

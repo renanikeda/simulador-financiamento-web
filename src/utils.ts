@@ -26,6 +26,10 @@ export const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 };
 
+export const roundNumber = (value: number, decimals = 2) => {
+    return parseFloat(value.toFixed(decimals));    
+};
+
 export type optionsHeader = {
     propertyValue: number,
     downPayment: number,

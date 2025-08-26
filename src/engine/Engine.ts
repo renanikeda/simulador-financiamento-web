@@ -1,4 +1,4 @@
-import { formatCurrency, type Parcela } from "../utils";
+import { formatCurrency, roundNumber, type Parcela } from "../utils";
 
 export default class Financiamento {
     valorImovel: number;
@@ -25,15 +25,19 @@ export default class Financiamento {
         this.valorEntrada = valorEntrada;
         this.valorFinanciado = valorImovel - valorEntrada;
         this.taxaJurosAnual = taxaJurosAnual / 100;
-        this.taxaJurosMensal = parseFloat(((1 + this.taxaJurosAnual) ** (1 / 12) - 1).toFixed(4));
+        this.taxaJurosMensal = roundNumber((1 + this.taxaJurosAnual) ** (1 / 12) - 1, 8);
         this.taxaTR = taxaTR / 100;
-        this.taxaTRMensal = parseFloat(((1 + this.taxaTR) ** (1 / 12) - 1).toFixed(4));
+        this.taxaTRMensal = roundNumber((1 + this.taxaTR) ** (1 / 12) - 1, 8);
         this.prazoMeses = termYears * 12;
         this.amortizacaoAdicional = amortizacaoAdicional;
         this.parcelaTotal = parcelaTotal;
     }
 
-    private deveAplicarAmortizacaoExtra(): boolean {
+    private deveCalcularNovaAmortizacao(): boolean {
+        return this.exiteAmortizacaoAdicional()|| this.taxaTRMensal > 0;
+    }
+
+    private exiteAmortizacaoAdicional(): boolean {
         return this.parcelaTotal > 0 || this.amortizacaoAdicional > 0;
     }
 
@@ -41,13 +45,15 @@ export default class Financiamento {
         return Math.floor(saldoDevedor / (parcelaIdeal - saldoDevedor * this.taxaJurosMensal));
     }
 
-    private calculateNewAmortization(saldoDevedorAjustado: number, currentTerm: number): number {
-        const amortizacaoIdeal = this.valorFinanciado / this.prazoMeses;
-        const saldoDevedorIdeal = this.valorFinanciado - amortizacaoIdeal * currentTerm;
+    private calcularNovaAmortizacao(saldoDevedorAjustado: number, prazoAtual: number): number {
+        const amortizacaoIdeal = saldoDevedorAjustado / (this.prazoMeses - prazoAtual + 1);
+        if (prazoAtual == 1 || !this.exiteAmortizacaoAdicional()) return amortizacaoIdeal;
+
+        const saldoDevedorIdeal = this.valorFinanciado - amortizacaoIdeal * prazoAtual;
         const parcelaIdeal = amortizacaoIdeal + saldoDevedorIdeal * this.taxaJurosMensal;
         const newTerm = this.calcularNovoPrazo(saldoDevedorAjustado, parcelaIdeal);
         return newTerm > 0
-            ? parseFloat((saldoDevedorAjustado / newTerm).toFixed(2))
+            ? roundNumber(saldoDevedorAjustado / newTerm)
             : saldoDevedorAjustado;
     }
 
@@ -61,21 +67,22 @@ export default class Financiamento {
         }
 
         const parcelas: Parcela[] = [];
-        let amortizacao = parseFloat((this.valorFinanciado / this.prazoMeses).toFixed(2));
+        let amortizacao = roundNumber(this.valorFinanciado / this.prazoMeses);
         let saldoDevedor = this.valorFinanciado;
 
-        for (let i = 1; i <= this.prazoMeses; i++) {
-            const saldoDevedorAjustado = parseFloat(
-                (saldoDevedor * (1 + this.taxaTRMensal)).toFixed(2)
-            );
+        for (let i = 1; i <= this.prazoMeses; i++) {    
+            const saldoDevedorAjustado = roundNumber(saldoDevedor * (1 + this.taxaTRMensal));
 
-            if (this.deveAplicarAmortizacaoExtra() && i > 1) {
-                amortizacao = this.calculateNewAmortization(saldoDevedorAjustado, i);
+            if (this.deveCalcularNovaAmortizacao()) {
+                amortizacao = this.calcularNovaAmortizacao(saldoDevedorAjustado, i);
             }
+            // if (this.taxaJurosMensal > 0) {
+            //     amortizacao = roundNumber(amortizacao * (1 + this.taxaTRMensal));
+            // }
 
-            const interest = parseFloat((saldoDevedorAjustado * this.taxaJurosMensal).toFixed(2));
+            const interest = roundNumber(saldoDevedorAjustado * this.taxaJurosMensal)   ;
             const parcela = amortizacao + interest;
-            const totalPayment =
+            const parcelaTotal =
                 this.parcelaTotal > 0 ? this.parcelaTotal : parcela + this.amortizacaoAdicional;
 
             let amortizacaoAdicional =
@@ -96,7 +103,7 @@ export default class Financiamento {
                 juros: interest,
                 parcela: parcela,
                 saldoDevedorAtualizado: saldoDevedor,
-                parcelaTotal: totalPayment
+                parcelaTotal: parcelaTotal
             });
 
             if (saldoDevedor === 0) break;
@@ -115,7 +122,7 @@ export default class Financiamento {
         for (let i = 1; i <= this.prazoMeses; i++) {
             const interest = parseFloat((saldoDevedor * this.taxaJurosMensal).toFixed(2));
             const amortizacao = parcela - interest;
-            const totalPayment = parcela + this.amortizacaoAdicional;
+            const parcelaTotal = parcela + this.amortizacaoAdicional;
             saldoDevedor = saldoDevedor - amortizacao - this.amortizacaoAdicional;
 
             if (saldoDevedor < 0) {
@@ -131,7 +138,7 @@ export default class Financiamento {
                 juros: interest,
                 parcela: parcela,
                 saldoDevedorAtualizado: saldoDevedor,
-                parcelaTotal: totalPayment
+                parcelaTotal: parcelaTotal
             });
         }
 
