@@ -1,7 +1,7 @@
-import { formatCurrency, type Installment } from '../utils';
+import { formatCurrency, type Parcela } from '../utils';
 import './Styles.css';
 
-function AmortizationTable({ installments }: { installments: Installment[] }) {
+function AmortizationTable({ installments }: { installments: Parcela[] }) {
 
     return (
         <>
@@ -22,15 +22,15 @@ function AmortizationTable({ installments }: { installments: Installment[] }) {
                     </thead>
                     <tbody>
                         {installments.map((installment) => (
-                            <tr key={installment.number}>
-                                <td>{installment.number}</td>
-                                <td>{formatCurrency(installment.adjustedOutstandingBalance)}</td>
-                                <td>{formatCurrency(installment.principalRepayment)}</td>
-                                <td>{formatCurrency(installment.interest)}</td>
-                                <td>{formatCurrency(installment.installmentAmount)}</td>
-                                <td>{formatCurrency(installment.additionalPrincipalRepayment)}</td>
-                                <td>{formatCurrency(installment.totalPayment)}</td>
-                                <td>{formatCurrency(installment.updatedOutstandingBalance)}</td>
+                            <tr key={installment.numero}>
+                                <td>{installment.numero}</td>
+                                <td>{formatCurrency(installment.saldoDevedorCorrigido)}</td>
+                                <td>{formatCurrency(installment.amortizacao)}</td>
+                                <td>{formatCurrency(installment.juros)}</td>
+                                <td>{formatCurrency(installment.parcela)}</td>
+                                <td>{formatCurrency(installment.amortizacaoAdicional)}</td>
+                                <td>{formatCurrency(installment.parcelaTotal)}</td>
+                                <td>{formatCurrency(installment.saldoDevedorAtualizado)}</td>
                             </tr>
                         ))}
                     </tbody>

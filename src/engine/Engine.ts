@@ -1,140 +1,140 @@
-import { formatCurrency, type Installment } from "../utils";
+import { formatCurrency, type Parcela } from "../utils";
 
-export default class Loan {
-    propertyValue: number;
-    downPayment: number;
-    financedAmount: number;
-    annualInterestRate: number;
-    monthlyInterestRate: number;
-    trRate: number;
-    monthlyTrRate: number;
-    termMonths: number;
-    additionalPrincipalRepayment: number;
-    totalInstallment: number;
+export default class Financiamento {
+    valorImovel: number;
+    valorEntrada: number;
+    valorFinanciado: number;
+    taxaJurosAnual: number;
+    taxaJurosMensal: number;
+    taxaTR: number;
+    taxaTRMensal: number;
+    prazoMeses: number;
+    amortizacaoAdicional: number;
+    parcelaTotal: number;
 
     constructor(
-        propertyValue: number,
-        downPayment: number,
-        annualInterestRate: number,
-        trRate: number = 0,
+        valorImovel: number,
+        valorEntrada: number,
+        taxaJurosAnual: number,
+        taxaTR: number = 0,
         termYears: number = 30,
-        additionalPrincipalRepayment: number = 0,
-        totalInstallment: number = 0
+        amortizacaoAdicional: number = 0,
+        parcelaTotal: number = 0
     ) {
-        this.propertyValue = propertyValue;
-        this.downPayment = downPayment;
-        this.financedAmount = propertyValue - downPayment;
-        this.annualInterestRate = annualInterestRate / 100;
-        this.monthlyInterestRate = parseFloat(((1 + this.annualInterestRate) ** (1 / 12) - 1).toFixed(4));
-        this.trRate = trRate / 100;
-        this.monthlyTrRate = parseFloat(((1 + this.trRate) ** (1 / 12) - 1).toFixed(4));
-        this.termMonths = termYears * 12;
-        this.additionalPrincipalRepayment = additionalPrincipalRepayment;
-        this.totalInstallment = totalInstallment;
+        this.valorImovel = valorImovel;
+        this.valorEntrada = valorEntrada;
+        this.valorFinanciado = valorImovel - valorEntrada;
+        this.taxaJurosAnual = taxaJurosAnual / 100;
+        this.taxaJurosMensal = parseFloat(((1 + this.taxaJurosAnual) ** (1 / 12) - 1).toFixed(4));
+        this.taxaTR = taxaTR / 100;
+        this.taxaTRMensal = parseFloat(((1 + this.taxaTR) ** (1 / 12) - 1).toFixed(4));
+        this.prazoMeses = termYears * 12;
+        this.amortizacaoAdicional = amortizacaoAdicional;
+        this.parcelaTotal = parcelaTotal;
     }
 
-    private shouldApplyExtraRepayment(): boolean {
-        return this.totalInstallment > 0 || this.additionalPrincipalRepayment > 0;
+    private deveAplicarAmortizacaoExtra(): boolean {
+        return this.parcelaTotal > 0 || this.amortizacaoAdicional > 0;
     }
 
-    private calculateNewTerm(outstandingBalance: number, idealInstallment: number): number {
-        return Math.floor(outstandingBalance / (idealInstallment - outstandingBalance * this.monthlyInterestRate));
+    private calcularNovoPrazo(saldoDevedor: number, parcelaIdeal: number): number {
+        return Math.floor(saldoDevedor / (parcelaIdeal - saldoDevedor * this.taxaJurosMensal));
     }
 
-    private calculateNewAmortization(adjustedOutstandingBalance: number, currentTerm: number): number {
-        const idealPrincipalRepayment = this.financedAmount / this.termMonths;
-        const idealOutstandingBalance = this.financedAmount - idealPrincipalRepayment * currentTerm;
-        const idealInstallment = idealPrincipalRepayment + idealOutstandingBalance * this.monthlyInterestRate;
-        const newTerm = this.calculateNewTerm(adjustedOutstandingBalance, idealInstallment);
+    private calculateNewAmortization(saldoDevedorAjustado: number, currentTerm: number): number {
+        const amortizacaoIdeal = this.valorFinanciado / this.prazoMeses;
+        const saldoDevedorIdeal = this.valorFinanciado - amortizacaoIdeal * currentTerm;
+        const parcelaIdeal = amortizacaoIdeal + saldoDevedorIdeal * this.taxaJurosMensal;
+        const newTerm = this.calcularNovoPrazo(saldoDevedorAjustado, parcelaIdeal);
         return newTerm > 0
-            ? parseFloat((adjustedOutstandingBalance / newTerm).toFixed(2))
-            : adjustedOutstandingBalance;
+            ? parseFloat((saldoDevedorAjustado / newTerm).toFixed(2))
+            : saldoDevedorAjustado;
     }
 
-    calculateSAC(): Installment[] {
-        const firstIdealInstallment =
-            this.financedAmount * this.monthlyInterestRate + this.financedAmount / this.termMonths;
-        if (this.totalInstallment > 0 && this.totalInstallment < firstIdealInstallment) {
-            const message = `Total installment cannot be less than the first SAC payment ${formatCurrency(firstIdealInstallment)}.`
+    calcularSAC(): Parcela[] {
+        const primeiraParcelaIdeal =
+            this.valorFinanciado * this.taxaJurosMensal + this.valorFinanciado / this.prazoMeses;
+        if (this.parcelaTotal > 0 && this.parcelaTotal < primeiraParcelaIdeal) {
+            const message = `Total installment cannot be less than the first SAC payment ${formatCurrency(primeiraParcelaIdeal)}.`
             alert(message)
             throw new Error(message);
         }
 
-        const installments: Installment[] = [];
-        let principalRepayment = parseFloat((this.financedAmount / this.termMonths).toFixed(2));
-        let outstandingBalance = this.financedAmount;
+        const parcelas: Parcela[] = [];
+        let amortizacao = parseFloat((this.valorFinanciado / this.prazoMeses).toFixed(2));
+        let saldoDevedor = this.valorFinanciado;
 
-        for (let i = 1; i <= this.termMonths; i++) {
-            const adjustedOutstandingBalance = parseFloat(
-                (outstandingBalance * (1 + this.monthlyTrRate)).toFixed(2)
+        for (let i = 1; i <= this.prazoMeses; i++) {
+            const saldoDevedorAjustado = parseFloat(
+                (saldoDevedor * (1 + this.taxaTRMensal)).toFixed(2)
             );
 
-            if (this.shouldApplyExtraRepayment() && i > 1) {
-                principalRepayment = this.calculateNewAmortization(adjustedOutstandingBalance, i);
+            if (this.deveAplicarAmortizacaoExtra() && i > 1) {
+                amortizacao = this.calculateNewAmortization(saldoDevedorAjustado, i);
             }
 
-            const interest = parseFloat((adjustedOutstandingBalance * this.monthlyInterestRate).toFixed(2));
-            const installmentAmount = principalRepayment + interest;
+            const interest = parseFloat((saldoDevedorAjustado * this.taxaJurosMensal).toFixed(2));
+            const parcela = amortizacao + interest;
             const totalPayment =
-                this.totalInstallment > 0 ? this.totalInstallment : installmentAmount + this.additionalPrincipalRepayment;
+                this.parcelaTotal > 0 ? this.parcelaTotal : parcela + this.amortizacaoAdicional;
 
-            let additionalPrincipalRepayment =
-                this.totalInstallment === 0 ? this.additionalPrincipalRepayment : this.totalInstallment - installmentAmount;
+            let amortizacaoAdicional =
+                this.parcelaTotal === 0 ? this.amortizacaoAdicional : this.parcelaTotal - parcela;
 
-            outstandingBalance = adjustedOutstandingBalance - principalRepayment - additionalPrincipalRepayment;
+            saldoDevedor = saldoDevedorAjustado - amortizacao - amortizacaoAdicional;
 
-            if (outstandingBalance < 0) {
-                additionalPrincipalRepayment += outstandingBalance;
-                outstandingBalance = 0;
+            if (saldoDevedor < 0) {
+                amortizacaoAdicional += saldoDevedor;
+                saldoDevedor = 0;
             }
 
-            installments.push({
-                number: i,
-                adjustedOutstandingBalance,
-                principalRepayment,
-                additionalPrincipalRepayment,
-                interest,
-                installmentAmount,
-                updatedOutstandingBalance: outstandingBalance,
-                totalPayment
+            parcelas.push({
+                numero: i,
+                saldoDevedorCorrigido: saldoDevedorAjustado,
+                amortizacao: amortizacao,
+                amortizacaoAdicional,
+                juros: interest,
+                parcela: parcela,
+                saldoDevedorAtualizado: saldoDevedor,
+                parcelaTotal: totalPayment
             });
 
-            if (outstandingBalance === 0) break;
+            if (saldoDevedor === 0) break;
         }
 
-        return installments;
+        return parcelas;
     }
 
-    calculatePRICE(): Installment[] {
-        const installments: Installment[] = [];
+    calcularPRICE(): Parcela[] {
+        const parcelas: Parcela[] = [];
         const priceFactor =
-            (1 - (1 + this.monthlyInterestRate) ** -this.termMonths) / this.monthlyInterestRate;
-        const installmentAmount = parseFloat((this.financedAmount / priceFactor).toFixed(2));
-        let outstandingBalance = this.financedAmount;
+            (1 - (1 + this.taxaJurosMensal) ** -this.prazoMeses) / this.taxaJurosMensal;
+        const parcela = parseFloat((this.valorFinanciado / priceFactor).toFixed(2));
+        let saldoDevedor = this.valorFinanciado;
 
-        for (let i = 1; i <= this.termMonths; i++) {
-            const interest = parseFloat((outstandingBalance * this.monthlyInterestRate).toFixed(2));
-            const principalRepayment = installmentAmount - interest;
-            const totalPayment = installmentAmount + this.additionalPrincipalRepayment;
-            outstandingBalance = outstandingBalance - principalRepayment - this.additionalPrincipalRepayment;
+        for (let i = 1; i <= this.prazoMeses; i++) {
+            const interest = parseFloat((saldoDevedor * this.taxaJurosMensal).toFixed(2));
+            const amortizacao = parcela - interest;
+            const totalPayment = parcela + this.amortizacaoAdicional;
+            saldoDevedor = saldoDevedor - amortizacao - this.amortizacaoAdicional;
 
-            if (outstandingBalance < 0) {
-                this.additionalPrincipalRepayment += outstandingBalance;
-                outstandingBalance = 0;
+            if (saldoDevedor < 0) {
+                this.amortizacaoAdicional += saldoDevedor;
+                saldoDevedor = 0;
             }
 
-            installments.push({
-                number: i,
-                adjustedOutstandingBalance: outstandingBalance,
-                principalRepayment,
-                additionalPrincipalRepayment: this.additionalPrincipalRepayment,
-                interest,
-                installmentAmount,
-                updatedOutstandingBalance: outstandingBalance,
-                totalPayment
+            parcelas.push({
+                numero: i,
+                saldoDevedorCorrigido: saldoDevedor,
+                amortizacao: amortizacao,
+                amortizacaoAdicional: this.amortizacaoAdicional,
+                juros: interest,
+                parcela: parcela,
+                saldoDevedorAtualizado: saldoDevedor,
+                parcelaTotal: totalPayment
             });
         }
 
-        return installments;
+        return parcelas;
     }
 }
