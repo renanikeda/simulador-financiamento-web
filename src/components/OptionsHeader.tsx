@@ -96,8 +96,8 @@ export default function OptionsHeader({
                 />
             </div>
             <div className="input-group">
-                <select id="extra-amortization" onChange={(e) => handleGenralChange('extraAmortizationType', e.target.value)}>
-                    <option value="Amortização Adicional" selected>Amortização Adicional</option>
+                <select id="extra-amortization" defaultValue={options.extraAmortizationType} onChange={(e) => handleGenralChange('extraAmortizationType', e.target.value)}>
+                    <option value="Amortização Adicional">Amortização Adicional</option>
                     <option value="Parcela Total">Parcela Total</option>
                 </select>
                 <input
