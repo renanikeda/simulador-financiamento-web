@@ -10,14 +10,34 @@ export default function OptionsHeader({
     const options = useOptions();
     const dispatch = useOptionsDispatch();
     const handleCurrencyChange = (name: keyof optionsHeader, value: string) => {
-        const newValue = checkBackspace(value) ? parseToNumber(value) / 10 : parseToNumber(value) * 10;
+        let newValue = parseToNumber(value)
+        console.log(value)
+        console.log(String(options[name]))
+        if (checkBackspace(value)) {
+            newValue = newValue / 10
+        } else if (value.length <= String(options[name]).length) {
+            newValue = newValue
+        // } else if (String(options[name]).split('').slice(-1)[0] === value.split('').slice(-1)[0]) {
+        //     newValue = newValue
+        } else {
+            newValue = newValue * 10;
+        }
         dispatch({ type: 'change', name, value: formatCurrency(newValue) });
     };
 
     const handleInterestChange = (name: keyof optionsHeader, value: string) => {
-        const newValue = (!value.includes('%') || checkBackspace(value)) ? parseToNumber(value) / 10 : parseToNumber(value) * 10;
+        let newValue = parseToNumber(value)
         console.log(value)
         console.log(newValue)
+        if (!value.includes('%') || checkBackspace(value)) {
+            newValue = newValue / 10
+        } else if (value.length <= String(options[name]).length) {
+            newValue = newValue
+        } else {
+            newValue = newValue * 10;
+        }
+        console.log(newValue)
+
         dispatch({ type: 'change', name, value: formatPercent(newValue/100) });
     };
     
