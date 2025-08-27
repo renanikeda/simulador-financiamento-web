@@ -1,16 +1,16 @@
-import type { actionsHeader, optionsHeader } from "./utils";
+import { formatCurrency, formatPercent, type actionsHeader, type optionsHeader } from "./utils";
 
 import { createContext, useContext } from 'react';
 
 
 export const initialOptions = {
-    propertyValue: 350_000,
-    downPayment: 200_000,
-    interestRate: 12.61,
-    TRRate: 2,
+    propertyValue: formatCurrency(350_000),
+    downPayment: formatCurrency(200_000),
+    interestRate: formatPercent(12.61/100),
+    TRRate: formatPercent(2/100),
     termYears: 30,
-    extraAmortization: 0,
-    totalPayment: 0
+    extraAmortization: formatCurrency(0),
+    totalPayment: formatCurrency(0)
 };
 
 export const OptionsContext = createContext<optionsHeader>(initialOptions);

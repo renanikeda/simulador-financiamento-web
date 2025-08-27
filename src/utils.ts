@@ -21,27 +21,39 @@ export type Parcela = {
     parcelaTotal: number;
 };
 
+export type optionsHeader = {
+    propertyValue: string,
+    downPayment: string,
+    interestRate: string,
+    TRRate: string,
+    termYears: number,
+    extraAmortization: string,
+    totalPayment: string
+}
+
+export type actionsHeader = {
+    type: 'change',
+    name: keyof optionsHeader,
+    value: string
+}
+
+export const parseToNumber = (str: string) => {
+    const cleaned = str.replace(/\./g, '').replace(/\,/g, '.').replace(/[^\d.]/g, '');
+    return parseFloat(cleaned) || 0;
+};
 
 export const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+};
+
+export const formatPercent = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
 };
 
 export const roundNumber = (value: number, decimals = 2) => {
     return parseFloat(value.toFixed(decimals));    
 };
 
-export type optionsHeader = {
-    propertyValue: number,
-    downPayment: number,
-    interestRate: number,
-    TRRate: number,
-    termYears: number,
-    extraAmortization: number,
-    totalPayment: number
-}
-
-export type actionsHeader = {
-    type: 'change',
-    name: keyof optionsHeader,
-    value: number
+export const checkBackspace = (value: string) => {
+    return value.split(',').slice(-1)[0].length < 2;
 }
