@@ -74,21 +74,15 @@ export default function OptionsHeader({
                 />
             </div>
             <div className="input-group">
-                <label htmlFor="extraAmortization">Amortização Extra:</label>
+                <select id="extra-amortization" onChange={(e) => handleGenralChange('extraAmortizationType', e.target.value)}>
+                    <option value="Amortização Adicional" selected>Amortização Adicional</option>
+                    <option value="Parcela Total">Parcela Total</option>
+                </select>
                 <input
                     id="extraAmortization"
                     type="text"
                     value={options.extraAmortization}
                     onChange={(e) => handleCurrencyChange('extraAmortization', (e.target.value))}
-                />
-            </div>
-            <div className="input-group">
-                <label htmlFor="totalPayment">Parcela Total:</label>
-                <input
-                    id="totalPayment"
-                    type="text"
-                    value={options.totalPayment}
-                    onChange={(e) => handleCurrencyChange('totalPayment', (e.target.value))}
                 />
             </div>
             <div className="submit-button">

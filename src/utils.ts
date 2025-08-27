@@ -28,6 +28,7 @@ export type optionsHeader = {
     TRRate: string,
     termYears: number,
     extraAmortization: string,
+    extraAmortizationType: 'Parcela Total' | 'Amortização Adicional'
     totalPayment: string
 }
 

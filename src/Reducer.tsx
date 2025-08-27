@@ -10,6 +10,7 @@ export const initialOptions = {
     TRRate: formatPercent(2/100),
     termYears: 30,
     extraAmortization: formatCurrency(0),
+    extraAmortizationType: 'Amortização Adicional' as const,
     totalPayment: formatCurrency(0)
 };
 

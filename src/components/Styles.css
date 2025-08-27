@@ -105,3 +105,11 @@ input[type="number"] {
 input[type="number"]::-ms-expand {
   display: none;
 }
+
+
+select[id="extra-amortization"] {
+    color: var(--text-color);
+    background-color: #f2f2f2;
+    font-weight: bold;
+    margin: 5px;
+}
