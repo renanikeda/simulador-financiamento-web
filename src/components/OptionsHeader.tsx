@@ -1,5 +1,5 @@
 import { useOptions, useOptionsDispatch } from '../Reducer';
-import { checkBackspace, formatCurrency, parseToNumber, formatPercent, type  optionsHeader } from '../utils';
+import { checkBackspace, formatCurrency, parseToNumber, formatPercent, type  optionsHeader, removePrefixSuffix } from '../utils';
 import './Styles.css';
 
 export default function OptionsHeader({
@@ -9,16 +9,18 @@ export default function OptionsHeader({
 }) {
     const options = useOptions();
     const dispatch = useOptionsDispatch();
+
     const handleCurrencyChange = (name: keyof optionsHeader, value: string) => {
         let newValue = parseToNumber(value)
         console.log(value)
-        console.log(String(options[name]))
-        if (checkBackspace(value)) {
+        if (removePrefixSuffix(value).length === 1) {
+            newValue = newValue / 100
+        } else if (checkBackspace(value)) {
             newValue = newValue / 10
         } else if (value.length <= String(options[name]).length) {
             newValue = newValue
-        // } else if (String(options[name]).split('').slice(-1)[0] === value.split('').slice(-1)[0]) {
-        //     newValue = newValue
+        } else if (value.slice(0, -1) !== String(options[name])) {
+            newValue = newValue
         } else {
             newValue = newValue * 10;
         }
@@ -27,17 +29,17 @@ export default function OptionsHeader({
 
     const handleInterestChange = (name: keyof optionsHeader, value: string) => {
         let newValue = parseToNumber(value)
-        console.log(value)
-        console.log(newValue)
-        if (!value.includes('%') || checkBackspace(value)) {
+        if (removePrefixSuffix(value).length === 1) {
+            newValue = newValue / 100
+        } else if (!value.includes('%') || checkBackspace(value)) {
             newValue = newValue / 10
         } else if (value.length <= String(options[name]).length) {
+            newValue = newValue
+        } else if (value.slice(0, -1) !== String(options[name])) {
             newValue = newValue
         } else {
             newValue = newValue * 10;
         }
-        console.log(newValue)
-
         dispatch({ type: 'change', name, value: formatPercent(newValue/100) });
     };
     

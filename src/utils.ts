@@ -58,3 +58,7 @@ export const roundNumber = (value: number, decimals = 2) => {
 export const checkBackspace = (value: string) => {
     return value.replace(/[^\d.,]/g, '').split(',').slice(-1)[0].length < 2;
 }
+
+export const removePrefixSuffix = (value: string) => {
+    return value.replace(/[^\d.,]/g, '');
+}
