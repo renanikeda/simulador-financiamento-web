@@ -34,6 +34,18 @@ function AmortizationTable({ installments }: { installments: Parcela[] }) {
                             </tr>
                         ))}
                     </tbody>
+                    { installments?.length > 0 && <tfoot>
+                        <tr id="footer" key="footer">
+                            <td>Total</td>
+                            <td>{formatCurrency(installments?.[installments.length - 1]?.saldoDevedorAtualizado || 0)}</td>
+                            <td>{formatCurrency(installments.reduce((acc, cur) => acc + cur.amortizacao, 0))}</td>
+                            <td>{formatCurrency(installments.reduce((acc, cur) => acc + cur.juros, 0))}</td>
+                            <td>{formatCurrency(installments.reduce((acc, cur) => acc + cur.parcela, 0))}</td>
+                            <td>{formatCurrency(installments.reduce((acc, cur) => acc + cur.amortizacaoAdicional, 0))}</td>
+                            <td>{formatCurrency(installments.reduce((acc, cur) => acc + cur.parcelaTotal, 0))}</td>
+                            <td>{formatCurrency(installments?.[installments.length - 1]?.saldoDevedorAtualizado || 0)}</td>
+                        </tr>
+                    </tfoot> }
                 </table>
             </div>
         </>
