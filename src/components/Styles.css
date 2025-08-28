@@ -55,11 +55,21 @@ h2 {
     flex-wrap: wrap;
 }
 
-.submit-button button {
-    height: 65%;
-    width: 75%;
-    /* margin: 15px; */
-    margin-top: 5%;
+button[id="submit"] {
+    height: 90%;
+    /* width: 75%; */
+    font-weight: bold;
+    font-size: 1rem;
+    border-width: 1px;
+    border-color: rgba(0,0,0, 0.25);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+label.placeholder {
+    visibility: hidden;
 }
 
 .input-group {
@@ -74,6 +84,7 @@ h2 {
     margin-bottom: 5px;
     color: var(--text-color);
     font-weight: bold;
+    font-size: 16px;
 }
 
 .input-group input {
@@ -110,5 +121,12 @@ select[id="extra-amortization"] {
     color: var(--text-color);
     background-color: var(--secondary-background-color);
     font-weight: bold;
-    margin: 5px;
+    font-size: 16px;
+    margin: 4.5px;
+    text-align: center;
+    text-align-last: center;
+    -moz-text-align-last: center;
+    border: none;
+    outline: none;
+    scroll-behavior: smooth;
 }

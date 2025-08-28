@@ -107,7 +107,8 @@ export default function OptionsHeader({
                     onChange={(e) => handleCurrencyChange('extraAmortization', (e.target.value))}
                 />
             </div>
-            <div className="submit-button">
+            <div className="input-group">
+                <label htmlFor="placholder" className="placeholder">Taxa TR:</label>
                 <button
                     id="submit"
                     onClick={() => calculateInstallments(options)}
