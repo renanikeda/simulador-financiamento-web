@@ -48,6 +48,7 @@ table tfoot {
     inset-block-end: 0;
     background-color: var(--secondary-background-color);
     text-align: center;
+    font-weight: bold;
 }
 
 h2 {
