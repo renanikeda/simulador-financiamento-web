@@ -6,7 +6,7 @@ body {
 .table-container {
     width: 90%;
     max-width: 100%;
-    max-height: 400px;
+    max-height: 55vh;
     overflow-y: auto;
     scrollbar-color: var(--text-color) var(--secondary-background-color);
     margin: 2% 5% 40px;
@@ -66,6 +66,10 @@ button[id="submit"] {
     color: var(--text-color);
     cursor: pointer;
     border-radius: 5px;
+}
+
+button[id="submit"]:hover {
+    filter: brightness(98%);
 }
 
 label.placeholder {
