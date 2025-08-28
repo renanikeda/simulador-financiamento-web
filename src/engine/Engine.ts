@@ -93,7 +93,7 @@ export default class Financiamento {
                 this.parcelaTotal > 0 ? this.parcelaTotal : parcela + this.amortizacaoAdicional;
 
             let amortizacaoAdicional =
-                this.parcelaTotal === 0 ? this.amortizacaoAdicional : this.parcelaTotal - parcela;
+                this.parcelaTotal === 0 || parcela > this.parcelaTotal ? this.amortizacaoAdicional : this.parcelaTotal - parcela;
 
             saldoDevedor = saldoDevedorAjustado - amortizacao - amortizacaoAdicional;
 
