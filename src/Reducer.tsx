@@ -4,11 +4,11 @@ import { createContext, useContext } from 'react';
 
 
 export const initialOptions = {
-    propertyValue: formatCurrency(350_000),
+    propertyValue: formatCurrency(555_000),
     downPayment: formatCurrency(200_000),
-    interestRate: formatPercent(12.61/100),
-    TRRate: formatPercent(2/100),
-    termYears: 30,
+    interestRate: formatPercent(13.43/100),
+    TRRate: formatPercent(1.5/100),
+    termYears: 35,
     extraAmortization: formatCurrency(0),
     extraAmortizationType: 'Amortização Adicional' as const,
     totalPayment: formatCurrency(0)
